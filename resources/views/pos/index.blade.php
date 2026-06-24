@@ -52,10 +52,10 @@
         </div>
 
         @if($products->count())
-        <div class="product-grid">
 
+        <div class="product-grid">
             @foreach($products as $product)
-            <div class="product-card">
+            <div class="product-card" onclick="openProductModal('{{ $product->id }}')">
                 <div class="product-image">
                     <img src="{{ asset($product->image) }}" alt="{{ $product->name }}">
                 </div>
@@ -65,14 +65,36 @@
                 </div>
             </div>
             @endforeach
+        </div>
 
+        {{-- Hidden Product Data --}}
+        <div style="display:none;">
+            @foreach($products as $product)
+
+            <div id="product-{{ $product->id }}"
+                data-name="{{ $product->name }}"
+                data-image="{{ asset($product->image) }}"
+                data-description="{{ $product->description ?? '' }}">
+
+                @foreach($product->variants as $variant)
+                <div class="variant-data"
+                    data-id="{{ $variant->id }}"
+                    data-name="{{ $variant->name }}"
+                    data-price="{{ $variant->price }}">
+                </div>
+                @endforeach
+            </div>
+
+            @endforeach
         </div>
 
         @else
+
         <div class="empty-state">
             <i class="fa-solid fa-mug-hot"></i>
             <p>No products found.</p>
         </div>
+
         @endif
 
     </div>
@@ -101,4 +123,85 @@
     </div>
 
 </div>
+
+<!-- Product Details Modal -->
+<div class="product-modal" id="productModal">
+    <div class="product-modal-content">
+        <button type="button" class="modal-close" onclick="closeProductModal()">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div id="modalContent">
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function openProductModal(productId) {
+        const product = document.getElementById(`product-${productId}`);
+
+        if (!product) return;
+
+        const name = product.dataset.name;
+        const image = product.dataset.image;
+        const description = product.dataset.description;
+
+        let variantsHtml = '';
+
+        product.querySelectorAll('.variant-data').forEach(variant => {
+
+            variantsHtml += `
+                <label class="variant-option">
+                    <input type="radio" name="selectedVariant" value="${variant.dataset.id}">
+
+                    <span>
+                        <strong>
+                            ${variant.dataset.name}
+                        </strong>
+
+                        <small>
+                            ${Number(variant.dataset.price).toLocaleString()} MMK
+                        </small>
+                    </span>
+                </label>
+            `;
+        });
+
+        document.getElementById('modalContent').innerHTML = `
+
+            <h4 class="modal-product-title">
+                ${name}
+            </h4>
+
+            <div class="modal-body-layout">
+                <div class="pos-modal-image">
+                    <img src="${image}" alt="${name}">
+                </div>
+
+                <div class="modal-details">
+                    <p class="pos-description">
+                        ${description}
+                    </p>
+
+                    <div class="variant-section">
+                        <div class="variant-list">
+                            ${variantsHtml}
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary w-100 mt-4">
+                        Add To Cart
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('productModal').classList.add('active');
+    }
+
+    function closeProductModal() {
+        document.getElementById('productModal').classList.remove('active');
+    }
+</script>
 @endsection

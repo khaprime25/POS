@@ -10,14 +10,17 @@ class POSController extends Controller
 {
     public function index()
     {
-        return view('pos.index', [
-            'categories' => Category::where('status', 1)
-                ->orderBy('name')
-                ->get(),
+        $categories = Category::where('status', 1)->orderBy('name')->get();
 
-            'products' => Product::where('status', 1)
-                ->orderBy('name')
-                ->get(),
+        $products = Product::with([
+            'variants' => function ($query) {
+                $query->where('status', 1);
+            }
+        ])->where('status', 1)->get();
+
+        return view('pos.index', [
+            'categories' => $categories,
+            'products' => $products,
         ]);
     }
 }
