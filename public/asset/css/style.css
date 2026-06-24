@@ -121,6 +121,7 @@ ol {
 
 .nav-link:hover {
     background-color: var(--hover-bg);
+    color: var(--text-primary);
 }
 
 .active-link {
@@ -287,6 +288,12 @@ ol {
     gap: 2rem;
 }
 
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
 .mb-1 {
     margin-bottom: 1rem;
 }
@@ -445,6 +452,31 @@ ol {
     box-shadow: 0 0 0 .2rem rgba(111, 78, 55, .15);
 }
 
+.filter-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    border: .1rem solid var(--border-color);
+    background: var(--card-bg);
+    padding: .8rem 1.6rem;
+    border-radius: 10rem;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.filter-btn:hover {
+    border-color: var(--accent-color);
+}
+
+.filter-btn.active {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
 /* Dashboard */
 
 .dashboard-stats {
@@ -539,6 +571,145 @@ ol {
     font-weight: 600;
 }
 
+/* Variant Section  */
+.search-results {
+    max-height: 20rem;
+    overflow-y: auto;
+    border: .1rem solid var(--border-color);
+    border-radius: 1rem;
+    margin-top: .8rem;
+    display: none;
+}
+
+.search-item {
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.search-item:hover {
+    background-color: var(--hover-bg);
+}
+
+/* POS Page Section  */
+.pos-layout {
+    display: grid;
+    grid-template-columns: 1fr 35rem;
+    gap: 2rem;
+    align-items: start;
+}
+
+.pos-search-wrapper {
+    position: relative;
+}
+
+.pos-search-wrapper i {
+    position: absolute;
+    top: 50%;
+    left: 1.5rem;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+.pos-search-wrapper .form-input {
+    padding-left: 4.5rem;
+}
+
+.pos-products {
+    min-height: 70rem;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 2rem;
+}
+
+.product-card {
+    border: 1px solid var(--border-color);
+    border-radius: 1.2rem;
+    overflow: hidden;
+    background: var(--card-bg);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-3px);
+}
+
+.product-image {
+    aspect-ratio: 1/1;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.product-info {
+    padding: 1.5rem;
+}
+
+.product-info h4 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.pos-cart {
+    position: sticky;
+    top: 10rem;
+    min-height: 70rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.empty-state,
+.cart-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-state i,
+.cart-empty i {
+    font-size: 4rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.empty-state p,
+.cart-empty p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.cart-footer {
+    border-top: 1px solid var(--border-color);
+    padding-top: 2rem;
+}
+
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    font-size: 1.6rem;
+}
+
+.cart-total strong {
+    font-size: 1.8rem;
+}
+
 @media (max-width: 991px) {
     :root {
         --sidebar-width: 24rem;
@@ -547,11 +718,24 @@ ol {
     html {
         font-size: 56.25%;
     }
+
+    .pos-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .pos-cart {
+        position: static;
+        min-height: auto;
+    }
 }
 
 @media (max-width: 768px) {
 
     .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-3 {
         grid-template-columns: 1fr;
     }
 

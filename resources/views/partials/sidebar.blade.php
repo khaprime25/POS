@@ -25,7 +25,7 @@
             Products
         </a>
 
-        <a href="#" class="nav-link">
+        <a href="{{ route('variants.index')}}" class="nav-link {{ request()->routeIs('variants.index') ? 'active-link' : '' }}">
             <i class="fa-solid fa-tags me-2"></i>
             Variants
         </a>
@@ -34,7 +34,7 @@
             Operations
         </div>
 
-        <a href="#" class="nav-link">
+        <a href="{{ route('pos.index')}}" class="nav-link {{ request()->routeIs('pos.index') ? 'active-link' : '' }}">
             <i class="fa-solid fa-cash-register me-2"></i>
             POS
         </a>

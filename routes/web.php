@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\POSController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +22,8 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('categories', CategoryController::class);
 Route::resource('products', ProductController::class);
+Route::resource('variants', ProductVariantController::class);
+
+Route::get('/pos', [POSController::class, 'index'])->middleware(['auth', 'verified'])->name('pos.index');
+
 require __DIR__ . '/auth.php';
