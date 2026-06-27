@@ -44,7 +44,12 @@
                     Category Name
                 </label>
                 <input type="text" name="name" class="form-input" placeholder="Enter category name"
-                    value="{{ $editingCategory->name ?? '' }}">
+                    value="{{ $editingCategory->name ?? '' }}" @error('name') style="border: 1px solid red;" @enderror">
+                @error('name')
+                <small style="color: red;">
+                    {{ $message }}
+                </small>
+                @enderror
             </div>
 
             <button class="btn btn-primary">

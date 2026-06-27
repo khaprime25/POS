@@ -11,15 +11,16 @@ class Sales extends Model
     protected $fillable = [
         'invoice_number',
         'user_id',
+        'service_type',
+        'table_name',
         'subtotal',
         'discount_amount',
         'tax_amount',
         'grand_total',
-        'payment_status',
-        'order_status',
         'payment_method',
         'cash_received',
         'change_given',
+        'order_status',
         'sale_date',
     ];
 

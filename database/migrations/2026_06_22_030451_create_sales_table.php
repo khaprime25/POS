@@ -15,19 +15,20 @@ return new class extends Migration
             $table->id();
             $table->string('invoice_number')->unique();
             $table->foreignId('user_id')->constrained();
+            $table->string('service_type')->default('take_away');
+            $table->string('table_name')->nullable();
             $table->decimal('subtotal', 10, 2);
             $table->decimal('discount_amount', 10, 2)->default(0);
             $table->decimal('tax_amount', 10, 2)->default(0);
             $table->decimal('grand_total', 10, 2);
-            $table->enum('payment_status', ['pending', 'paid'])->default('pending');
             $table->enum('order_status', [
-                'pending',
                 'sent_to_kitchen',
                 'preparing',
                 'ready',
-                'served'
-            ])->default('pending');
-            $table->enum('payment_method', ['cash', 'card', 'qr'])->nullable();
+                'completed',
+                'cancelled'
+            ])->default('sent_to_kitchen');
+            $table->enum('payment_method', ['cash', 'kpay', 'wave'])->nullable();
             $table->decimal('cash_received', 10, 2)->nullable();
             $table->decimal('change_given', 10, 2)->nullable();
             $table->timestamp('sale_date');

@@ -46,8 +46,13 @@
                 Product
             </label>
 
-            <input type="text" id="productSearch" class="form-input" placeholder="Search product..."
+            <input @error('product_id') style="border: 1px solid red;" @enderror" type="text" id="productSearch" class="form-input" placeholder="Search product..."
                 value="{{ old('product_name', $editingVariant->product->name ?? '') }}">
+            @error('product_id')
+            <small style="color: red;">
+                {{ $message }}
+            </small>
+            @enderror
 
             <input type="hidden" name="product_id" id="selectedProductId"
                 value="{{ old('product_id', $editingVariant->product_id ?? '') }}">
@@ -68,8 +73,13 @@
                 Variant Name
             </label>
 
-            <input type="text" name="name" class="form-input" placeholder="Large, Medium, Small, 1 Slice..."
+            <input @error('name') style="border: 1px solid red;" @enderror" type="text" name="name" class="form-input" placeholder="Large, Medium, Small, 1 Slice..."
                 value="{{ old('name', $editingVariant->name ?? '') }}">
+            @error('name')
+            <small style="color: red;">
+                {{ $message }}
+            </small>
+            @enderror
         </div>
 
         <div class="grid-3 mb-2">
@@ -80,8 +90,13 @@
                     Selling Price
                 </label>
 
-                <input type="number" name="price" class="form-input"
+                <input @error('price') style="border: 1px solid red;" @enderror" type="number" name="price" class="form-input"
                     value="{{ old('price', $editingVariant->price ?? '') }}">
+                @error('price')
+                <small style="color: red;">
+                    {{ $message }}
+                </small>
+                @enderror
             </div>
 
             {{-- Cost Price --}}
@@ -90,8 +105,13 @@
                     Cost Price
                 </label>
 
-                <input type="number" name="cost_price" class="form-input"
+                <input @error('cost_price') style="border: 1px solid red;" @enderror" type="number" name="cost_price" class="form-input"
                     value="{{ old('cost_price', $editingVariant->cost_price ?? '') }}">
+                @error('cost_price')
+                <small style="color: red;">
+                    {{ $message }}
+                </small>
+                @enderror
             </div>
 
             {{-- Stock --}}
@@ -100,8 +120,13 @@
                     Stock
                 </label>
 
-                <input type="number" name="stock" class="form-input"
+                <input @error('stock') style="border: 1px solid red;" @enderror" type="number" name="stock" class="form-input"
                     value="{{ old('stock', $editingVariant->stock ?? '') }}">
+                @error('stock')
+                <small style="color: red;">
+                    {{ $message }}
+                </small>
+                @enderror
             </div>
 
         </div>

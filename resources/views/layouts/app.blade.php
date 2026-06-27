@@ -31,7 +31,7 @@
                     setTimeout(() => {
                         alert.remove();
                     }, 300);
-                }, 4000);
+                }, 2500);
             }
         });
     </script>

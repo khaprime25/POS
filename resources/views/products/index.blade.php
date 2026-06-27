@@ -58,6 +58,11 @@
                     </option>
                     @endforeach
                 </select>
+                @error('category_id')
+                <small style="color: red;">
+                    {{ $message }}
+                </small>
+                @enderror
             </div>
 
             <div class="form-group">
@@ -87,7 +92,12 @@
             </label>
 
             <input type="text" name="name" class="form-input" placeholder="Enter product name"
-                value="{{ old('name', $editingProduct->name ?? '') }}">
+                value="{{ old('name', $editingProduct->name ?? '') }}" @error('name') style="border: 1px solid red;" @enderror">
+            @error('name')
+            <small style="color: red;">
+                {{ $message }}
+            </small>
+            @enderror
         </div>
 
         <div class="form-group mb-2">
