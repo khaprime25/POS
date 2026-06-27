@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\KitchenController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -31,6 +32,8 @@ Route::post('/pos/cart/increase/{variantId}', [POSController::class, 'increaseQt
 Route::post('/pos/cart/decrease/{variantId}', [POSController::class, 'decreaseQty'])->name('pos.cart.decrease');
 Route::post('/pos/cart/remove/{variantId}', [POSController::class, 'removeItem'])->name('pos.cart.remove');
 
-Route::post('/sales/store', [POSController::class, 'storeSale'])->name('sales.store');
+Route::post('/sales/store', [SaleController::class, 'storeSale'])->name('sales.store');
+
+Route::get('/kitchen', [KitchenController::class, 'index'])->name('kitchen.index');
 
 require __DIR__ . '/auth.php';

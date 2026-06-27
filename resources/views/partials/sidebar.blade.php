@@ -44,7 +44,7 @@
             Sales
         </a>
 
-        <a href="#" class="nav-link">
+        <a href="{{ route('kitchen.index')}}" class="nav-link {{ request()->routeIs('kitchen.index') ? 'active-link' : '' }}">
             <i class="fa-solid fa-utensils me-2"></i>
             Kitchen
         </a>

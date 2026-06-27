@@ -968,6 +968,81 @@ ol {
     color: var(--text-primary);
 }
 
+/* Kitchen Section  */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: .6rem 1.2rem;
+
+    border-radius: 999px;
+
+    font-size: 1.3rem;
+    font-weight: 600;
+
+    text-transform: capitalize;
+}
+
+.status-sent_to_kitchen {
+
+    background: #e3f2fd;
+    color: #1565c0;
+
+}
+
+.status-preparing {
+
+    background: #fff3cd;
+    color: #b7791f;
+
+}
+
+.status-ready {
+
+    background: #d1fae5;
+    color: #047857;
+
+}
+
+.status-completed {
+
+    background: #e5e7eb;
+    color: #4b5563;
+
+}
+
+.status-cancelled {
+
+    background: #fee2e2;
+    color: #b91c1c;
+
+}
+
+.table-action-btn {
+
+    width: 3.8rem;
+    height: 3.8rem;
+
+    border: none;
+
+    border-radius: .8rem;
+
+    background: var(--hover-bg);
+
+    cursor: pointer;
+
+    transition: .2s;
+
+}
+
+.table-action-btn:hover {
+
+    background: var(--accent-color);
+    color: #fff;
+
+}
+
 @media (max-width: 991px) {
     :root {
         --sidebar-width: 24rem;
