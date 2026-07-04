@@ -11,7 +11,7 @@ use App\Http\Controllers\KitchenController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return to_route('dashboard');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
@@ -35,5 +35,8 @@ Route::post('/pos/cart/remove/{variantId}', [POSController::class, 'removeItem']
 Route::post('/sales/store', [SaleController::class, 'storeSale'])->name('sales.store');
 
 Route::get('/kitchen', [KitchenController::class, 'index'])->name('kitchen.index');
+Route::post('/kitchen/{sale}/status', [KitchenController::class, 'updateStatus'])->name('kitchen.status');
+
+Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
 
 require __DIR__ . '/auth.php';

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title', 'POS')
-@section('page-title', 'Kitchen')
+@section('page-title', 'Sales')
 @section('content')
 
 {{-- Success Alert --}}
@@ -22,25 +22,34 @@
 @endif
 
 {{-- Filters --}}
-
 <div class="mb-3">
     <div class="filter-group">
-        <a href="{{ route('kitchen.index') }}"
+        <a href="{{ route('sales.index') }}"
             class="filter-btn {{ !request('status') ? 'active' : '' }}">
             All
         </a>
 
-        <a href="{{ route('kitchen.index', ['status' => 'sent_to_kitchen']) }}"
+        <a href="{{ route('sales.index', ['status' => 'completed']) }}"
+            class="filter-btn {{ request('status') == 'completed' ? 'active' : '' }}">
+            Completed
+        </a>
+
+        <a href="{{ route('sales.index', ['status' => 'cancelled']) }}"
+            class="filter-btn {{ request('status') == 'cancelled' ? 'active' : '' }}">
+            Cancelled
+        </a>
+
+        <a href="{{ route('sales.index', ['status' => 'sent_to_kitchen']) }}"
             class="filter-btn {{ request('status') == 'sent_to_kitchen' ? 'active' : '' }}">
             Sent
         </a>
 
-        <a href="{{ route('kitchen.index', ['status' => 'preparing']) }}"
+        <a href="{{ route('sales.index', ['status' => 'preparing']) }}"
             class="filter-btn {{ request('status') == 'preparing' ? 'active' : '' }}">
             Preparing
         </a>
 
-        <a href="{{ route('kitchen.index', ['status' => 'ready']) }}"
+        <a href="{{ route('sales.index', ['status' => 'ready']) }}"
             class="filter-btn {{ request('status') == 'ready' ? 'active' : '' }}">
             Ready
         </a>
@@ -120,13 +129,21 @@
             data-status="{{ $sale->order_status }}"
             data-service="{{ $sale->service_type }}"
             data-table="{{ $sale->table_name }}"
-            data-time="{{ \Carbon\Carbon::parse($sale->sale_date)->diffForHumans() }}">
+            data-time="{{ \Carbon\Carbon::parse($sale->sale_date)->diffForHumans() }}"
+            data-subtotal="{{ number_format($sale->subtotal) }}"
+            data-discount="{{ number_format($sale->discount_amount) }}"
+            data-tax="{{ number_format($sale->tax_amount) }}"
+            data-total="{{ number_format($sale->grand_total) }}"
+            data-payment="{{ strtoupper($sale->payment_method) }}">
 
             @foreach($sale->items as $item)
             <div class="sale-item"
+
                 data-product="{{ $item->product_name }}"
                 data-variant="{{ $item->variant_name }}"
-                data-qty="{{ $item->quantity }}">
+                data-price="{{ number_format($item->price) }}"
+                data-qty="{{ $item->quantity }}"
+                data-subtotal="{{ number_format($item->subtotal) }}">
             </div>
             @endforeach
         </div>
@@ -169,7 +186,31 @@
         <div id="kitchenItems" class="kitchen-items">
         </div>
 
-        <div id="kitchenActions" class="kitchen-actions">
+        <div class="sale-summary">
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <strong id="saleSubtotal"></strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Discount</span>
+                <strong id="saleDiscount"></strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Tax</span>
+                <strong id="saleTax"></strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Payment</span>
+                <strong id="salePayment"></strong>
+            </div>
+
+            <div class="summary-row total">
+                <span>Grand Total</span>
+                <strong id="saleGrandTotal"></strong>
+            </div>
         </div>
 
     </div>
@@ -179,52 +220,6 @@
 </div>
 
 <script>
-    function buildStatusButton(id, nextStatus, text, buttonClass) {
-
-        return `
-        <form method="POST" action="/kitchen/${id}/status">
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            <input type="hidden" name="status" value="${nextStatus}">
-            <button type="submit" class="btn ${buttonClass}">
-                ${text}
-            </button>
-        </form>
-    `;
-
-    }
-    const kitchenStatusActions = {
-
-        sent_to_kitchen: [{
-                status: "preparing",
-                text: "Start Preparing",
-                class: "btn-primary"
-            },
-
-            {
-                status: "cancelled",
-                text: "Cancel Order",
-                class: "btn-cancel"
-            }
-        ],
-
-        preparing: [{
-            status: "ready",
-            text: "Mark Ready",
-            class: "btn-primary"
-        }],
-
-        ready: [{
-            status: "completed",
-            text: "Complete Order",
-            class: "btn-primary"
-        }],
-
-        completed: [],
-
-        cancelled: []
-
-    };
-
     function openKitchenOrder(id) {
 
         // Get the hidden sale data
@@ -251,38 +246,34 @@
         let items = "";
 
         sale.querySelectorAll(".sale-item").forEach(item => {
-
             items += `
-            <div class="kitchen-item">
-                <div class="kitchen-item-title">
-                    ${item.dataset.product}
-                    (${item.dataset.variant})
-                </div>
+                <div class="sale-item-card">
+                    <div class="sale-item-top">
+                        <div>
+                            <h5>
+                                ${item.dataset.product} ( ${item.dataset.variant} )
+                            </h5>
+                        </div>
 
-                <div class="kitchen-item-qty">
-                    Qty × ${item.dataset.qty}
+                        <strong>
+                            ${item.dataset.subtotal} Ks
+                        </strong>
+                    </div>
+
+                    <div class="sale-item-bottom">
+                        ${item.dataset.price} Ks × ${item.dataset.qty}
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
         });
 
         document.getElementById("kitchenItems").innerHTML = items;
 
-        // Action Buttons
-        let actionButtons = '';
-
-        const actions = kitchenStatusActions[status] || [];
-
-        actions.forEach(action => {
-            actionButtons += buildStatusButton(
-                id,
-                action.status,
-                action.text,
-                action.class
-            );
-        });
-
-        document.getElementById("kitchenActions").innerHTML = actionButtons;
+        document.getElementById("saleSubtotal").textContent = sale.dataset.subtotal + " Ks";
+        document.getElementById("saleDiscount").textContent = sale.dataset.discount + " Ks";
+        document.getElementById("saleTax").textContent = sale.dataset.tax + " Ks";
+        document.getElementById("saleGrandTotal").textContent = sale.dataset.total + " Ks";
+        document.getElementById("salePayment").textContent = sale.dataset.payment;
 
         // Show Modal 
         document.getElementById("kitchenOrderModal").classList.add("active");

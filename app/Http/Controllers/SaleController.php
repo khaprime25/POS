@@ -9,6 +9,18 @@ use Illuminate\Http\Request;
 
 class SaleController extends Controller
 {
+    public function index(Request $request)
+    {
+        $query = Sales::with('items');
+
+        if ($request->filled('status')) {
+            $query->where('order_status', $request->status);
+        }
+
+        $sales = $query->latest()->paginate(10);
+        return view('sales.index', compact('sales'));
+    }
+
     public function storeSale(Request $request)
     {
         $request->validate([

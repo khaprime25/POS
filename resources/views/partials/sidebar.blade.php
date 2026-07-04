@@ -39,7 +39,7 @@
             POS
         </a>
 
-        <a href="#" class="nav-link">
+        <a href="{{ route('sales.index')}}" class="nav-link {{ request()->routeIs('sales.index') ? 'active-link' : '' }}">
             <i class="fa-solid fa-receipt me-2"></i>
             Sales
         </a>

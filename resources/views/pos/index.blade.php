@@ -282,7 +282,7 @@
                         KBZ Pay
                     </option>
 
-                    <option value="wavepay">
+                    <option value="wave">
                         Wave Pay
                     </option>
                 </select>
