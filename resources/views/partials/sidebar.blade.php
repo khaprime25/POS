@@ -6,6 +6,9 @@
     </div>
 
     <nav class="sidebar-nav">
+
+        <!-- Owner Section -->
+        @if(auth()->user()->role === 'owner')
         <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active-link' : '' }}">
             <i class="fa-solid fa-chart-line me-2"></i>
             Dashboard
@@ -67,6 +70,50 @@
             <i class="fa-solid fa-envelope me-2"></i>
             Reports
         </a>
+        @endif
+
+        <!-- Cashier Section  -->
+        @if(auth()->user()->role === 'cashier')
+        <div class="nav-title">
+            Operations
+        </div>
+
+        <a href="{{ route('pos.index')}}" class="nav-link {{ request()->routeIs('pos.index') ? 'active-link' : '' }}">
+            <i class="fa-solid fa-cash-register me-2"></i>
+            POS
+        </a>
+
+        <div class="nav-title">
+            Administration
+        </div>
+
+        <a href="#" class="nav-link">
+            <i class="fa-solid fa-envelope me-2"></i>
+            Reports
+        </a>
+        @endif
+
+        <!-- Chef Section -->
+        @if(auth()->user()->role === 'chef')
+        <div class="nav-title">
+            Operations
+        </div>
+
+        <a href="{{ route('kitchen.index')}}" class="nav-link {{ request()->routeIs('kitchen.index') ? 'active-link' : '' }}">
+            <i class="fa-solid fa-utensils me-2"></i>
+            Kitchen
+        </a>
+
+        <div class="nav-title">
+            Administration
+        </div>
+
+        <a href="#" class="nav-link">
+            <i class="fa-solid fa-envelope me-2"></i>
+            Reports
+        </a>
+        @endif
+
     </nav>
 
 </aside>

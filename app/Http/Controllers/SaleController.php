@@ -6,6 +6,8 @@ use App\Models\Sales;
 use App\Models\SaleItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class SaleController extends Controller
 {
@@ -69,7 +71,7 @@ class SaleController extends Controller
 
             $nextId = (Sales::max('id') ?? 0) + 1;
             $invoiceNumber = 'KC-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
-            $user_id = auth()->id();
+            $user_id = Auth::id();
 
             $sale = Sales::create([
                 'invoice_number' => $invoiceNumber,
