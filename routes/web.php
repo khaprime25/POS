@@ -7,7 +7,11 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\KitchenController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ProductModifierController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,10 +31,29 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified', 'role:owner'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::resource('categories', CategoryController::class);
     Route::resource('products', ProductController::class);
     Route::resource('variants', ProductVariantController::class);
+
     Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
+
+    Route::get('/user', [UserController::class, 'index'])->name('user.index');
+    Route::post('/user/store', [UserController::class, 'store'])->name('user.store');
+    Route::post('/user/{user}/toggle', [UserController::class, 'toggle'])->name('user.toggle');
+
+    Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
+    Route::post('/settings/tax', [SettingController::class, 'updateTax'])->name('setting.tax.update');
+    Route::post('/settings/discount', [SettingController::class, 'updateDiscount'])->name('setting.discount.update');
+
+    Route::post('/reports/{report}/resolve', [ReportController::class, 'resolve'])->name('reports.resolve');
+    Route::delete('/reports/{report}', [ReportController::class, 'destroy'])->name('reports.destroy');
+
+    Route::get('/modifiers', [ProductModifierController::class, 'index'])->name('modifiers.index');
+    Route::post('/modifiers/store', [ProductModifierController::class, 'store'])->name('modifiers.store');
+    Route::get('/modifiers/{modifier}/edit', [ProductModifierController::class, 'edit'])->name('modifiers.edit');
+    Route::put('/modifiers/{modifier}', [ProductModifierController::class, 'update'])->name('modifiers.update');
+    Route::delete('/modifiers/{modifier}', [ProductModifierController::class, 'destroy'])->name('modifiers.destroy');
 });
 
 Route::middleware(['auth', 'role:owner,cashier'])->group(function () {
@@ -51,6 +74,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::post('/reports/store', [ReportController::class, 'store'])->name('reports.store');
 });
 
 require __DIR__ . '/auth.php';

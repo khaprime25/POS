@@ -19,6 +19,7 @@ class UserSeeder extends Seeder
             'email' => 'owner@pos.com',
             'password' => Hash::make('password'),
             'role' => 'owner',
+            'is_active' => true,
         ]);
 
         // CASHIER
@@ -27,6 +28,7 @@ class UserSeeder extends Seeder
             'email' => 'cashier@pos.com',
             'password' => Hash::make('password'),
             'role' => 'cashier',
+            'is_active' => true,
         ]);
 
         // CHEF
@@ -35,6 +37,7 @@ class UserSeeder extends Seeder
             'email' => 'chef@pos.com',
             'password' => Hash::make('password'),
             'role' => 'chef',
+            'is_active' => true,
         ]);
 
         // Optional: extra cashiers for testing

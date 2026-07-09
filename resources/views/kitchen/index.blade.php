@@ -109,6 +109,7 @@
                 @endforelse
             </tbody>
         </table>
+        {{ $sale->items->count() }}
 
         <!-- Storing Sale and Sale Items Data -->
         @foreach($sales as $sale)
@@ -126,7 +127,10 @@
             <div class="sale-item"
                 data-product="{{ $item->product_name }}"
                 data-variant="{{ $item->variant_name }}"
-                data-qty="{{ $item->quantity }}">
+                data-price="{{ number_format($item->price) }}"
+                data-qty="{{ $item->quantity }}"
+                data-subtotal="{{ number_format($item->subtotal) }}"
+                data-modifiers='@json($item->modifiers)'>
             </div>
             @endforeach
         </div>
@@ -226,7 +230,6 @@
     };
 
     function openKitchenOrder(id) {
-
         // Get the hidden sale data
         const sale = document.getElementById(`sale-${id}`);
 
@@ -252,18 +255,64 @@
 
         sale.querySelectorAll(".sale-item").forEach(item => {
 
-            items += `
-            <div class="kitchen-item">
-                <div class="kitchen-item-title">
-                    ${item.dataset.product}
-                    (${item.dataset.variant})
-                </div>
+            const modifiers = JSON.parse(item.dataset.modifiers || "[]");
 
-                <div class="kitchen-item-qty">
-                    Qty × ${item.dataset.qty}
+            let modifiersHtml = "";
+
+            modifiers.forEach(modifier => {
+                modifiersHtml += `
+                    <div class="sale-item-modifier">
+
+                        ${modifier.title} :
+                        ${modifier.option}
+
+                        ${
+                            Number(modifier.extra_charge) > 0
+                            ? `<small>(+${Number(modifier.extra_charge).toLocaleString()} Ks)</small>`
+                            : ""
+                        }
+
+                    </div>
+                `;
+            });
+
+            items += `
+                <div class="sale-item-card">
+
+                    <div class="sale-item-top">
+
+                        <div>
+
+                            <h5>
+
+                                ${item.dataset.product}
+
+                                <small>
+                                    (${item.dataset.variant})
+                                </small>
+
+                            </h5>
+
+                            ${modifiersHtml}
+
+                        </div>
+
+                        <strong>
+
+                            ${item.dataset.subtotal} Ks
+
+                        </strong>
+
+                    </div>
+
+                    <div class="sale-item-bottom">
+
+                        ${item.dataset.price} Ks × ${item.dataset.qty}
+
+                    </div>
+
                 </div>
-            </div>
-        `;
+                `;
         });
 
         document.getElementById("kitchenItems").innerHTML = items;

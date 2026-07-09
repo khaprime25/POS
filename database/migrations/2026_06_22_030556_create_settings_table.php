@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
+            $table->decimal('tax_percentage', 5, 2)->default(0);
+            $table->decimal('discount_percentage', 5, 2)->default(0);
             $table->timestamps();
         });
     }

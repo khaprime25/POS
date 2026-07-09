@@ -30,6 +30,15 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
+        if (!Auth::user()->is_active) {
+
+            Auth::logout();
+
+            return back()->withErrors([
+                'email' => 'This account has been deactivated.',
+            ]);
+        }
+
         return match ($user->role) {
             'owner'   => redirect()->route('dashboard'),
             'cashier' => redirect()->route('pos.index'),

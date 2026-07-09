@@ -33,6 +33,11 @@
             Variants
         </a>
 
+        <a href="{{ route('modifiers.index')}}" class="nav-link {{ request()->routeIs('modifiers.index') ? 'active-link' : '' }}">
+            <i class="fa-solid fa-plus me-2"></i>
+            Modifier
+        </a>
+
         <div class="nav-title">
             Operations
         </div>
@@ -56,17 +61,17 @@
             Administration
         </div>
 
-        <a href="#" class="nav-link">
+        <a href="{{ route('user.index')}}" class="nav-link {{ request()->routeIs('user.index') ? 'active-link' : '' }}">
             <i class="fa-solid fa-users me-2"></i>
             Users
         </a>
 
-        <a href="#" class="nav-link">
+        <a href="{{ route('setting.index')}}" class="nav-link {{ request()->routeIs('setting.index') ? 'active-link' : '' }}">
             <i class="fa-solid fa-gear me-2"></i>
             Settings
         </a>
 
-        <a href="#" class="nav-link">
+        <a href="{{ route('reports.index')}}" class="nav-link {{ request()->routeIs('reports.index') ? 'active-link' : '' }}">
             <i class="fa-solid fa-envelope me-2"></i>
             Reports
         </a>
@@ -87,7 +92,7 @@
             Administration
         </div>
 
-        <a href="#" class="nav-link">
+        <a href="{{ route('reports.index')}}" class="nav-link {{ request()->routeIs('reports.index') ? 'active-link' : '' }}">
             <i class="fa-solid fa-envelope me-2"></i>
             Reports
         </a>
@@ -108,7 +113,7 @@
             Administration
         </div>
 
-        <a href="#" class="nav-link">
+        <a href="{{ route('reports.index')}}" class="nav-link {{ request()->routeIs('reports.index') ? 'active-link' : '' }}">
             <i class="fa-solid fa-envelope me-2"></i>
             Reports
         </a>

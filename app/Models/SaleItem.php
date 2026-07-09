@@ -21,6 +21,10 @@ class SaleItem extends Model
         'modifiers',
     ];
 
+    protected $casts = [
+        'modifiers' => 'array',
+    ];
+
     public function sale()
     {
         return $this->belongsTo(

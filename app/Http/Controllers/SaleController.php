@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sales;
 use App\Models\SaleItem;
+use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,8 +46,11 @@ class SaleController extends Controller
         }
 
         $subtotal = collect($cart)->sum('subtotal');
-        $discount = 0;
-        $tax = 0;
+
+        $setting = Setting::first();
+        $discount = $subtotal * (($setting->discount_percentage ?? 0) / 100);
+        $tax = $subtotal * (($setting->tax_percentage ?? 0) / 100);
+
         $grandTotal = $subtotal - $discount + $tax;
 
         // Payment Validation 
@@ -90,16 +94,17 @@ class SaleController extends Controller
             ]);
 
             foreach ($cart as $item) {
+
                 SaleItem::create([
                     'sale_id' => $sale->id,
                     'product_id' => $item['product_id'],
                     'product_variant_id' => $item['variant_id'],
                     'product_name' => $item['product_name'],
                     'variant_name' => $item['variant_name'],
-                    'price' => $item['price'],
+                    'price' => $item['unit_price'],
                     'quantity' => $item['quantity'],
                     'subtotal' => $item['subtotal'],
-                    'modifiers' => null,
+                    'modifiers' => $item['modifiers'],
                 ]);
             }
         });

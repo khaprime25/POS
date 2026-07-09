@@ -74,7 +74,8 @@
             <div id="product-{{ $product->id }}"
                 data-name="{{ $product->name }}"
                 data-image="{{ asset($product->image) }}"
-                data-description="{{ $product->description ?? '' }}">
+                data-description="{{ $product->description ?? '' }}"
+                data-modifiers='@json($product->modifiers)'>
 
                 @foreach($product->variants as $variant)
                 <div class="variant-data"
@@ -108,51 +109,153 @@
         @if(count($cart))
 
         <!-- Cart Items -->
+
         <div class="cart-items">
 
             @foreach($cart as $item)
+
             <div class="cart-item">
-                <h5 class="cart-product">
-                    {{ $item['product_name'] }} <span>( {{ $item['variant_name'] }} )</span>
-                </h5>
 
-                <div class="cart-line mt-1">
+                {{-- Product --}}
+                <div class="cart-item-header">
+
+                    <h5 class="cart-product">
+                        {{ $item['product_name'] }}
+                    </h5>
+
+                    <span class="cart-variant">
+                        {{ $item['variant_name'] }}
+                    </span>
+
+                </div>
+
+
+                {{-- Modifier List --}}
+                @if(!empty($item['modifiers']))
+
+                <div class="cart-modifiers">
+
+                    @foreach($item['modifiers'] as $modifier)
+
+                    <div class="cart-modifier">
+
+                        <span>
+
+                            {{ $modifier['title'] }}
+                            :
+                            {{ $modifier['option'] }}
+
+                        </span>
+
+                        @if($modifier['extra_charge'] > 0)
+
+                        <small>
+
+                            +{{ number_format($modifier['extra_charge']) }} Ks
+
+                        </small>
+
+                        @endif
+
+                    </div>
+
+                    @endforeach
+
+                </div>
+
+                @endif
+
+
+                {{-- Price Row --}}
+                <div class="cart-line">
+
                     <span>
-                        <div class="cart-line">
-                            <div class="me-1">{{ number_format($item['price']) }} Ks</div>
 
-                            <!-- Quantity Increase and Decrease -->
-                            <div class="qty-controls">
-                                <form method="POST" action="{{ route('pos.cart.decrease', $item['variant_id']) }}">
-                                    @csrf
-                                    <button type="submit"> - </button>
-                                </form>
+                        {{ number_format($item['unit_price']) }}
 
-                                <span>
-                                    {{ $item['quantity'] }}
-                                </span>
+                        Ks
 
-                                <form method="POST" action="{{ route('pos.cart.increase', $item['variant_id']) }}">
-                                    @csrf
-                                    <button type="submit"> + </button>
-                                </form>
-                            </div>
+                        ×
 
-                            <!-- Remove Item -->
-                            <form method="POST" action="{{ route('pos.cart.remove', $item['variant_id']) }}">
-                                @csrf
-                                <button type="submit" class="remove-item-btn">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </form>
-                        </div>
+                        {{ $item['quantity'] }}
+
                     </span>
 
                     <strong>
-                        {{ number_format($item['subtotal']) }} Ks
+
+                        {{ number_format($item['subtotal']) }}
+
+                        Ks
+
                     </strong>
+
                 </div>
+
+
+                {{-- Controls --}}
+                <div class="cart-actions">
+
+                    <div class="qty-controls">
+
+                        <form
+                            method="POST"
+                            action="{{ route('pos.cart.decrease',$item['cart_key']) }}">
+
+                            @csrf
+
+                            <button type="submit">
+
+                                -
+
+                            </button>
+
+                        </form>
+
+
+                        <span>
+
+                            {{ $item['quantity'] }}
+
+                        </span>
+
+
+                        <form
+                            method="POST"
+                            action="{{ route('pos.cart.increase',$item['cart_key']) }}">
+
+                            @csrf
+
+                            <button type="submit">
+
+                                +
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    <form
+                        method="POST"
+                        action="{{ route('pos.cart.remove',$item['cart_key']) }}">
+
+                        @csrf
+
+                        <button
+                            type="submit"
+                            class="remove-item-btn">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                        </button>
+
+                    </form>
+
+                </div>
+
             </div>
+
             @endforeach
 
         </div>
@@ -166,12 +269,17 @@
 
         @endif
 
+
         <!-- Amounts Section -->
         @php
 
         $subtotal = collect($cart)->sum('subtotal');
-        $discount = 0;
-        $tax = 0;
+
+        $discount = $subtotal * (($setting->discount_percentage ?? 0) / 100);
+
+        $tax = ($subtotal - $discount)
+        * (($setting->tax_percentage ?? 0) / 100);
+
         $grandTotal = $subtotal - $discount + $tax;
 
         @endphp
@@ -353,8 +461,45 @@
         const name = product.dataset.name;
         const image = product.dataset.image;
         const description = product.dataset.description;
+        const modifiers = JSON.parse(product.dataset.modifiers);
 
         let variantsHtml = '';
+        let modifiersHtml = "";
+
+        const groupedModifiers = {};
+
+        modifiers.forEach(modifier => {
+            if (!groupedModifiers[modifier.title]) {
+                groupedModifiers[modifier.title] = [];
+            }
+            groupedModifiers[modifier.title].push(modifier);
+        });
+
+        Object.keys(groupedModifiers).forEach(title => {
+            modifiersHtml += `
+                <div class="modifier-section">
+                    <h5 class="modifier-title">
+                        ${title}
+                    </h5>
+                    <div class="variant-list">
+            `;
+
+            groupedModifiers[title].forEach((modifier, index) => {
+                modifiersHtml += `
+                    <label class="variant-option">
+                        <input type="radio" name="modifier_${title}" value="${modifier.id}" ${index === 0 ? "checked" : ""}>
+                        <span>
+                            <strong>
+                                ${modifier.option}
+                            </strong>
+                            <small>
+                                ${Number(modifier.extra_charge) > 0 ? Number(modifier.extra_charge).toLocaleString() + " Ks" : "Free"}
+                            </small>
+                        </span>
+                    </label>
+                    `;
+            });
+        });
 
         product.querySelectorAll('.variant-data').forEach(variant => {
 
@@ -396,11 +541,17 @@
                         </div>
                     </div>
 
+                    <div class="modifier-wrapper">
+                        ${modifiersHtml}
+                    </div>
+
                     <form method="POST" action="{{ route('pos.cart.add') }}">
                         @csrf
 
                         <input type="hidden" name="variant_id" id="selectedVariantId">
                         <input type="hidden" name="quantity" id="selectedQuantity" value="1">
+                        <div id="modifierInputs"></div>
+
                         <button type="submit" class="btn btn-primary">
                             Add To Cart
                         </button>
@@ -417,6 +568,19 @@
                 document.getElementById('selectedVariantId').value = this.value;
             });
         });
+
+        const form = document.querySelector('#modalContent form');
+
+        form.addEventListener('submit', function() {
+            document.querySelectorAll('input[name^="modifier_"]:checked').forEach(input => {
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'modifiers[]';
+                hidden.value = input.value;
+                form.appendChild(hidden);
+            });
+        });
+
         document.getElementById('productModal').classList.add('active');
     }
 

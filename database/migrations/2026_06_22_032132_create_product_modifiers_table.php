@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('product_modifiers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->string('name'); // Sugar Level, Ice Level
-            $table->enum('type', ['single', 'multiple'])->default('single');
-            $table->boolean('is_required')->default(false);
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->string('title');
+            $table->string('option');
+            $table->decimal('extra_charge', 10, 2)->default(0);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

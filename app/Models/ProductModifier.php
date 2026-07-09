@@ -10,18 +10,14 @@ class ProductModifier extends Model
 {
     protected $fillable = [
         'product_id',
-        'name',
-        'type',
-        'is_required',
+        'title',
+        'option',
+        'extra_charge',
+        'status',
     ];
 
     public function product()
     {
         return $this->belongsTo(Product::class);
-    }
-
-    public function options()
-    {
-        return $this->hasMany(ProductModifierOption::class);
     }
 }

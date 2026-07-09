@@ -19,6 +19,16 @@ class RoleMiddleware
             return redirect()->route('login');
         }
 
+        $user = Auth::user();
+
+        if (!$user->is_active) {
+
+            Auth::logout();
+
+            return redirect()->route('login')
+                ->with('error', 'Your account has been deactivated.');
+        }
+
         if (!in_array(Auth::user()->role, $roles)) {
             abort(403);
         }
