@@ -109,7 +109,6 @@
                 @endforelse
             </tbody>
         </table>
-        {{ $sale->items->count() }}
 
         <!-- Storing Sale and Sale Items Data -->
         @foreach($sales as $sale)
@@ -121,7 +120,7 @@
             data-status="{{ $sale->order_status }}"
             data-service="{{ $sale->service_type }}"
             data-table="{{ $sale->table_name }}"
-            data-time="{{ \Carbon\Carbon::parse($sale->sale_date)->diffForHumans() }}">
+            data-time="{{ $sale->created_at->diffForHumans() }}">
 
             @foreach($sale->items as $item)
             <div class="sale-item"
@@ -262,57 +261,41 @@
             modifiers.forEach(modifier => {
                 modifiersHtml += `
                     <div class="sale-item-modifier">
+                        <span class="modifier-label">
+                            ${modifier.title} : 
+                        </span>
 
-                        ${modifier.title} :
-                        ${modifier.option}
-
-                        ${
-                            Number(modifier.extra_charge) > 0
-                            ? `<small>(+${Number(modifier.extra_charge).toLocaleString()} Ks)</small>`
-                            : ""
-                        }
-
+                        <span class="modifier-option">
+                            ${modifier.option}
+                        </span>
                     </div>
                 `;
             });
 
             items += `
                 <div class="sale-item-card">
-
-                    <div class="sale-item-top">
-
-                        <div>
-
-                            <h5>
-
-                                ${item.dataset.product}
-
-                                <small>
-                                    (${item.dataset.variant})
-                                </small>
-
-                            </h5>
-
-                            ${modifiersHtml}
-
+                    <div class="sale-item-header">
+                        <div class="sale-item-name">
+                            ${item.dataset.product}
+                            <span>
+                                ( ${item.dataset.variant} )
+                            </span>
                         </div>
 
-                        <strong>
-
-                            ${item.dataset.subtotal} Ks
-
-                        </strong>
-
+                        <div class="sale-item-qty">
+                            Qty × ${item.dataset.qty}
+                        </div>
                     </div>
 
-                    <div class="sale-item-bottom">
-
-                        ${item.dataset.price} Ks × ${item.dataset.qty}
-
-                    </div>
-
+                    ${
+                        modifiersHtml ? `
+                        <div class="sale-item-modifiers">
+                            ${modifiersHtml}
+                        </div>
+                        ` : ""
+                    }
                 </div>
-                `;
+            `;
         });
 
         document.getElementById("kitchenItems").innerHTML = items;

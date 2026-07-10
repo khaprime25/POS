@@ -1301,6 +1301,111 @@ ol {
     color: #b91c1c;
 }
 
+/* Kitchen Page */
+.sale-item-card {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sale-item-card:last-child {
+    border-bottom: none;
+}
+
+.sale-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: .6rem;
+}
+
+.sale-item-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.sale-item-name span {
+    font-weight: 500;
+}
+
+.sale-item-qty {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.sale-item-modifiers {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin-left: .2rem;
+}
+
+.sale-item-modifier {
+    display: flex;
+    gap: .5rem;
+    font-size: 1.2rem;
+}
+
+.modifier-label {
+    color: var(--text-secondary);
+    font-weight: 700;
+    min-width: 70px;
+}
+
+.modifier-option {
+    font-weight: 600;
+}
+
+.sale-item-card {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sale-item-card:last-child {
+    border-bottom: none;
+}
+
+.sale-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.sale-item-top h5 {
+    font-size: 1.6rem;
+    margin-bottom: .5rem;
+}
+
+.sale-item-top h5 small {
+    font-size: 1.6rem;
+    font-weight: 500;
+}
+
+.sale-item-modifier {
+    display: flex;
+    gap: .5rem;
+    margin-bottom: .25rem;
+    font-size: 1.4rem;
+}
+
+.sale-item-modifier span {
+    min-width: 70px;
+}
+
+.sale-item-modifier strong {
+    font-size: 1.4rem;
+    font-weight: 500;
+    min-width: 70px;
+}
+
+.sale-item-bottom {
+    margin-top: .7rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
 @media (max-width: 991px) {
     :root {
         --sidebar-width: 24rem;

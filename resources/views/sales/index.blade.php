@@ -129,7 +129,7 @@
             data-status="{{ $sale->order_status }}"
             data-service="{{ $sale->service_type }}"
             data-table="{{ $sale->table_name }}"
-            data-time="{{ \Carbon\Carbon::parse($sale->sale_date)->diffForHumans() }}"
+            data-time="{{ $sale->created_at->diffForHumans() }}"
             data-subtotal="{{ number_format($sale->subtotal) }}"
             data-discount="{{ number_format($sale->discount_amount) }}"
             data-tax="{{ number_format($sale->tax_amount) }}"
@@ -143,7 +143,8 @@
                 data-variant="{{ $item->variant_name }}"
                 data-price="{{ number_format($item->price) }}"
                 data-qty="{{ $item->quantity }}"
-                data-subtotal="{{ number_format($item->subtotal) }}">
+                data-subtotal="{{ number_format($item->subtotal) }}"
+                data-modifiers='@json($item->modifiers)'>
             </div>
             @endforeach
         </div>
@@ -246,25 +247,53 @@
         let items = "";
 
         sale.querySelectorAll(".sale-item").forEach(item => {
+
+            const modifiers = JSON.parse(item.dataset.modifiers || "[]");
+
+            let modifiersHtml = "";
+
+            modifiers.forEach(modifier => {
+
+                modifiersHtml += `
+                    <div class="sale-item-modifier">
+                        <span>
+                            ${modifier.title}
+                        </span>
+
+                        <strong>
+                            ${modifier.option}
+                        </strong>
+
+                        ${Number(modifier.extra_charge) > 0 ? `<small>( ${Number(modifier.extra_charge).toLocaleString()} Ks )</small>` : ""}
+                    </div>
+                `;
+            });
+
             items += `
                 <div class="sale-item-card">
                     <div class="sale-item-top">
                         <div>
                             <h5>
-                                ${item.dataset.product} ( ${item.dataset.variant} )
+                                ${item.dataset.product}
+                                <small>
+                                    ( ${item.dataset.variant} )
+                                </small>
                             </h5>
+
+                            ${modifiersHtml}
+
+                            <div class="sale-item-bottom">
+                                ${item.dataset.price} Ks × ${item.dataset.qty}
+                            </div>
                         </div>
 
                         <strong>
                             ${item.dataset.subtotal} Ks
                         </strong>
                     </div>
-
-                    <div class="sale-item-bottom">
-                        ${item.dataset.price} Ks × ${item.dataset.qty}
-                    </div>
                 </div>
             `;
+
         });
 
         document.getElementById("kitchenItems").innerHTML = items;

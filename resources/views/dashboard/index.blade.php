@@ -63,34 +63,6 @@
 
 <!-- Today's Activity -->
 <div class="dashboard-grid mb-3">
-
-    <!-- TODAY ACTIVITY -->
-    <div class="card">
-        <h2 class="section-header mb-2">
-            Today's Activity
-        </h2>
-
-        <div class="activity-list">
-            <div class="activity-item">
-                <span>#1001</span>
-                <span>Americano Order</span>
-                <span>08:00 AM</span>
-            </div>
-
-            <div class="activity-item">
-                <span>#1002</span>
-                <span>Latte Order</span>
-                <span>08:15 AM</span>
-            </div>
-
-            <div class="activity-item">
-                <span>#1003</span>
-                <span>Cappuccino Order</span>
-                <span>08:22 AM</span>
-            </div>
-        </div>
-    </div>
-
     <!-- Kitchen Overiew -->
     <div class="card">
         <h2 class="section-header mb-2">
@@ -116,34 +88,6 @@
             <div>
                 <h3>80</h3>
                 <p>Served</p>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<!-- Products and Staff Reports -->
-<div class="dashboard-grid mb-3">
-
-    <div class="card">
-        <h2 class="section-header mb-2">
-            Best Sellers
-        </h2>
-
-        <div class="activity-list">
-            <div class="activity-item">
-                <span>Americano</span>
-                <span>120 Sold</span>
-            </div>
-
-            <div class="activity-item">
-                <span>Latte</span>
-                <span>98 Sold</span>
-            </div>
-
-            <div class="activity-item">
-                <span>Mocha</span>
-                <span>75 Sold</span>
             </div>
         </div>
     </div>
@@ -191,6 +135,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 <!-- Recent Orders Table -->
