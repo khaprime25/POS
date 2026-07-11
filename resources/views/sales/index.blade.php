@@ -24,40 +24,81 @@
 {{-- Filters --}}
 <div class="mb-3">
     <div class="filter-group">
-        <a href="{{ route('sales.index') }}"
-            class="filter-btn {{ !request('status') ? 'active' : '' }}">
-            All
+        <a href="{{ route('sales.index',['period'=>'today']) }}"
+            class="filter-btn {{ request('period')=='today' ? 'active' : '' }}">
+            Today
         </a>
-
-        <a href="{{ route('sales.index', ['status' => 'completed']) }}"
-            class="filter-btn {{ request('status') == 'completed' ? 'active' : '' }}">
-            Completed
+        <a href="{{ route('sales.index',['period'=>'week']) }}"
+            class="filter-btn {{ request('period')=='week' ? 'active' : '' }}">
+            This Week
         </a>
-
-        <a href="{{ route('sales.index', ['status' => 'cancelled']) }}"
-            class="filter-btn {{ request('status') == 'cancelled' ? 'active' : '' }}">
-            Cancelled
+        <a href="{{ route('sales.index',['period'=>'month']) }}"
+            class="filter-btn {{ request('period')=='month' ? 'active' : '' }}">
+            This Month
         </a>
-
-        <a href="{{ route('sales.index', ['status' => 'sent_to_kitchen']) }}"
-            class="filter-btn {{ request('status') == 'sent_to_kitchen' ? 'active' : '' }}">
-            Sent
+        <a href="{{ route('sales.index',['period'=>'year']) }}"
+            class="filter-btn {{ request('period')=='year' ? 'active' : '' }}">
+            This Year
         </a>
-
-        <a href="{{ route('sales.index', ['status' => 'preparing']) }}"
-            class="filter-btn {{ request('status') == 'preparing' ? 'active' : '' }}">
-            Preparing
-        </a>
-
-        <a href="{{ route('sales.index', ['status' => 'ready']) }}"
-            class="filter-btn {{ request('status') == 'ready' ? 'active' : '' }}">
-            Ready
+        <a href="{{ route('sales.index',['period'=>'all']) }}"
+            class="filter-btn {{ request('period')=='all' ? 'active' : '' }}">
+            All Time
         </a>
     </div>
 </div>
 
-<div class="card">
+<div class="dashboard-grid mb-3">
 
+    <div class="card">
+        <div>
+            <h3>
+                {{ number_format($revenue) }} MMK
+            </h3>
+
+            <p>
+                Revenue
+            </p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div>
+            <h3>
+                {{ number_format($orders) }}
+            </h3>
+
+            <p>
+                Total Orders
+            </p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div>
+            <h3>
+                {{ number_format($averageOrder) }} MMK
+            </h3>
+
+            <p>
+                Average Order
+            </p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div>
+            <h3>
+                {{ number_format($taxCollected) }} MMK
+            </h3>
+
+            <p>
+                Tax Collected
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
     <div class="section-header">
         <h4>Latest Kitchen Orders</h4>
     </div>
@@ -68,7 +109,8 @@
                 <tr>
                     <th>Invoice</th>
                     <th style="text-align: center;">Service</th>
-                    <th style="text-align: center;">Status</th>
+                    <th style="text-align: center;">Total</th>
+                    <th style="text-align: center;">Payment</th>
                     <th>Time</th>
                     <th>Action</th>
                 </tr>
@@ -88,9 +130,10 @@
                         </strong>
                     </td>
                     <td style="text-align: center;">
-                        <span class="status-badge status-{{ $sale->order_status }}">
-                            {{ ucfirst(str_replace('_', ' ', $sale->order_status)) }}
-                        </span>
+                        {{ number_format($sale->grand_total) }} Ks
+                    </td>
+                    <td style="text-align: center;">
+                        {{ ucfirst($sale->payment_method) }}
                     </td>
                     <td>
                         {{ $sale->created_at->diffForHumans() }}

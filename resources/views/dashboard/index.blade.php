@@ -15,49 +15,57 @@
 <!-- Stats -->
 <div class="dashboard-stats mb-3">
 
-    <div class="card stat-card">
-        <div class="stat-icon">
-            <i class="fa-solid fa-sack-dollar"></i>
-        </div>
+    <a href="{{route('sales.index', ['period'=>'today'])}}">
+        <div class="card stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-sack-dollar"></i>
+            </div>
 
-        <div>
-            <h3>250,000 MMK</h3>
-            <p>Today's Revenue</p>
+            <div>
+                <h3>{{ number_format($todayRevenue) }} Ks</h3>
+                <p>Today's Revenue</p>
+            </div>
         </div>
-    </div>
+    </a>
 
-    <div class="card stat-card">
-        <div class="stat-icon">
-            <i class="fa-solid fa-receipt"></i>
-        </div>
+    <a href="{{route('sales.index', ['period'=>'week'])}}">
+        <div class="card stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-receipt"></i>
+            </div>
 
-        <div>
-            <h3>87</h3>
-            <p>Orders Today</p>
+            <div>
+                <h3>{{ number_format($weeklyRevenue) }} Ks</h3>
+                <p>Weekly Revenue</p>
+            </div>
         </div>
-    </div>
+    </a>
 
-    <div class="card stat-card">
-        <div class="stat-icon">
-            <i class="fa-solid fa-kitchen-set"></i>
-        </div>
+    <a href="{{route('sales.index', ['period'=>'month'])}}">
+        <div class="card stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-kitchen-set"></i>
+            </div>
 
-        <div>
-            <h3>5</h3>
-            <p>Kitchen Queue</p>
+            <div>
+                <h3>{{ number_format($monthlyRevenue) }} Ks</h3>
+                <p>Mothly Revenue</p>
+            </div>
         </div>
-    </div>
+    </a>
 
-    <div class="card stat-card">
-        <div class="stat-icon">
-            <i class="fa-solid fa-envelope"></i>
-        </div>
+    <a href="{{route('variants.index')}}">
+        <div class="card stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-envelope"></i>
+            </div>
 
-        <div>
-            <h3>3</h3>
-            <p>Today Reports</p>
+            <div>
+                <h3>{{ $lowStockItems }}</h3>
+                <p>Low Stock Items</p>
+            </div>
         </div>
-    </div>
+    </a>
 
 </div>
 
@@ -71,69 +79,85 @@
 
         <div class="kitchen-stats">
             <div>
-                <h3>5</h3>
+                <h3>{{ $pendingOrders }}</h3>
                 <p>Pending</p>
             </div>
 
             <div>
-                <h3>2</h3>
+                <h3>{{ $preparingOrders }}</h3>
                 <p>Preparing</p>
             </div>
 
             <div>
-                <h3>3</h3>
+                <h3>{{ $readyOrders }}</h3>
                 <p>Ready</p>
             </div>
 
             <div>
-                <h3>80</h3>
+                <h3>{{ $completedOrders }}</h3>
                 <p>Served</p>
             </div>
         </div>
     </div>
 
     <div class="card">
+
         <h2 class="section-header mb-2">
             Staff Reports
         </h2>
 
         <div class="activity-list">
 
+            @forelse($reports as $report)
+
             <div class="activity-item">
+
                 <div>
-                    <strong>Sugar Running Low</strong>
+
+                    <strong>
+                        {{ $report->title }}
+                    </strong>
+
                     <p class="section-subtitle">
-                        Reported by Chef
+
+                        Reported by
+
+                        {{ ucfirst($report->user->role) }}
+
+                        -
+
+                        {{ $report->user->name }}
+
                     </p>
+
+                    <small>
+
+                        {{ \Illuminate\Support\Str::limit($report->message, 60) }}
+
+                    </small>
+
                 </div>
 
                 <span class="role-badge">
-                    High
+
+                    {{ ucfirst($report->priority) }}
+
                 </span>
+
             </div>
 
-            <div class="activity-item">
-                <div>
-                    <strong>Receipt Paper Needed</strong>
-                    <p class="section-subtitle">Reported by Cashier</p>
-                </div>
+            @empty
 
-                <span class="role-badge">
-                    Medium
-                </span>
+            <div class="empty-state">
+
+                No open reports.
+
             </div>
 
-            <div class="activity-item">
-                <div>
-                    <strong>Oven Maintenance</strong>
-                    <p class="section-subtitle">Reported by Chef</p>
-                </div>
+            @endforelse
 
-                <span class="role-badge">
-                    Urgent
-                </span>
-            </div>
         </div>
+
     </div>
 
 </div>
@@ -159,7 +183,7 @@
             <tr>
                 <td>#1001</td>
                 <td>Walk In</td>
-                <td>8,000 MMK</td>
+                <td>8,000 Ks</td>
                 <td>
                     <span class="role-badge">Paid</span>
                 </td>

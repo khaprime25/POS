@@ -8,6 +8,7 @@ use App\Models\Setting;
 use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -15,14 +16,82 @@ class SaleController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Sales::with('items');
+        $period = $request->get('period', 'today');
 
-        if ($request->filled('status')) {
-            $query->where('order_status', $request->status);
+        $query = Sales::with([
+            'items',
+            'user'
+        ])->where('order_status', 'completed');
+
+        switch ($period) {
+
+            case 'week':
+
+                $query->whereBetween('sale_date', [
+                    Carbon::now()->startOfWeek(),
+                    Carbon::now()->endOfWeek()
+                ]);
+
+                break;
+
+            case 'month':
+
+                $query->whereBetween('sale_date', [
+                    Carbon::now()->startOfMonth(),
+                    Carbon::now()->endOfMonth()
+                ]);
+
+                break;
+
+            case 'year':
+
+                $query->whereBetween('sale_date', [
+                    Carbon::now()->startOfYear(),
+                    Carbon::now()->endOfYear()
+                ]);
+
+                break;
+
+            case 'all':
+
+                // No filter
+
+                break;
+
+            default:
+
+                $query->whereDate(
+                    'sale_date',
+                    Carbon::today()
+                );
+
+                break;
         }
 
-        $sales = $query->latest()->paginate(10);
-        return view('sales.index', compact('sales'));
+        $summary = (clone $query);
+
+        $revenue = $summary->sum('grand_total');
+
+        $orders = $summary->count();
+
+        $taxCollected = $summary->sum('tax_amount');
+
+        $averageOrder = $orders > 0
+            ? $revenue / $orders
+            : 0;
+
+        $sales = $query
+            ->latest('sale_date')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('sales.index', compact(
+            'sales',
+            'revenue',
+            'orders',
+            'averageOrder',
+            'taxCollected'
+        ));
     }
 
     public function storeSale(Request $request)
