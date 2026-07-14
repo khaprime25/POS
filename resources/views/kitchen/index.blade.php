@@ -265,7 +265,7 @@
                             ${modifier.title} : 
                         </span>
 
-                        <span class="modifier-option">
+                        <span class="kitchen-modifier-option">
                             ${modifier.option}
                         </span>
                     </div>

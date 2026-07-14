@@ -155,7 +155,7 @@ class ProductController extends Controller
 
             $image->move(public_path('products'), $imageName);
 
-            $imagePath = 'products/' . $imageName;
+            $imagePath = 'uploads/products/' . $imageName;
         } else {
 
             $imagePath = $product->image;

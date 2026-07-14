@@ -58,7 +58,7 @@
                 value="{{ old('product_id', $editingVariant->product_id ?? '') }}">
 
             <div class="search-results" id="productResults">
-                @foreach($products->take(3) as $product)
+                @foreach($products->take(5) as $product)
                 <div class="search-item" data-id="{{ $product->id }}">
                     {{ $product->name }}
                 </div>

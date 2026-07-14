@@ -100,7 +100,7 @@
 
 <div class="card">
     <div class="section-header">
-        <h4>Latest Kitchen Orders</h4>
+        <h4>Completed Sale Orders</h4>
     </div>
 
     <div class="table-responsive">

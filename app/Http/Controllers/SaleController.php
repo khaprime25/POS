@@ -132,6 +132,17 @@ class SaleController extends Controller
 
         $changeGiven = max(0, $request->cash_received - $grandTotal);
 
+        foreach ($cart as $item) {
+            $variant = ProductVariant::findOrFail($item['variant_id']);
+
+            if ($variant->stock < $item['quantity']) {
+
+                return back()->withErrors([
+                    'stock' => "{$variant->name} does not have enough stock."
+                ]);
+            }
+        }
+
         // Create Sale and SaleItem Section
         DB::transaction(function () use (
             $request,
@@ -146,16 +157,6 @@ class SaleController extends Controller
             $nextId = (Sales::max('id') ?? 0) + 1;
             $invoiceNumber = 'KC-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
             $user_id = Auth::id();
-
-            foreach ($cart as $item) {
-                $variant = ProductVariant::findOrFail($item['variant_id']);
-
-                if ($variant->stock < $item['quantity']) {
-                    return back()->withErrors([
-                        'stock' => "{$variant->name} does not have enough stock."
-                    ]);
-                }
-            }
 
             $sale = Sales::create([
                 'invoice_number' => $invoiceNumber,

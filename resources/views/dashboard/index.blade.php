@@ -15,6 +15,19 @@
 <!-- Stats -->
 <div class="dashboard-stats mb-3">
 
+    <a href="{{route('sales.index', ['period'=>'week'])}}">
+        <div class="card stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-receipt"></i>
+            </div>
+
+            <div>
+                <h3>{{ number_format($todayProfit) }} Ks</h3>
+                <p>Today's Profit</p>
+            </div>
+        </div>
+    </a>
+
     <a href="{{route('sales.index', ['period'=>'today'])}}">
         <div class="card stat-card">
             <div class="stat-icon">
@@ -28,15 +41,15 @@
         </div>
     </a>
 
-    <a href="{{route('sales.index', ['period'=>'week'])}}">
+    <a href="{{route('sales.index', ['period'=>'month'])}}">
         <div class="card stat-card">
             <div class="stat-icon">
                 <i class="fa-solid fa-receipt"></i>
             </div>
 
             <div>
-                <h3>{{ number_format($weeklyRevenue) }} Ks</h3>
-                <p>Weekly Revenue</p>
+                <h3>{{ number_format($monthlyProfit) }} Ks</h3>
+                <p>Monthly Profit</p>
             </div>
         </div>
     </a>
@@ -44,17 +57,17 @@
     <a href="{{route('sales.index', ['period'=>'month'])}}">
         <div class="card stat-card">
             <div class="stat-icon">
-                <i class="fa-solid fa-kitchen-set"></i>
+                <i class="fa-solid fa-receipt"></i>
             </div>
 
             <div>
                 <h3>{{ number_format($monthlyRevenue) }} Ks</h3>
-                <p>Mothly Revenue</p>
+                <p>Monthly Revenue</p>
             </div>
         </div>
     </a>
 
-    <a href="{{route('variants.index')}}">
+    <a href="{{route('dashboard.stock')}}">
         <div class="card stat-card">
             <div class="stat-icon">
                 <i class="fa-solid fa-envelope"></i>
@@ -63,6 +76,19 @@
             <div>
                 <h3>{{ $lowStockItems }}</h3>
                 <p>Low Stock Items</p>
+            </div>
+        </div>
+    </a>
+
+    <a href="{{route('sales.index', ['period'=>'today'])}}">
+        <div class="card stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-envelope"></i>
+            </div>
+
+            <div>
+                <h3>{{ $todayOrders }}</h3>
+                <p>Today's Sales</p>
             </div>
         </div>
     </a>
@@ -172,22 +198,30 @@
     <table class="dashboard-table">
         <thead>
             <tr>
-                <th>Order No</th>
-                <th>Customer</th>
-                <th>Total</th>
-                <th>Status</th>
+                <th style="text-align: center;">Order No</th>
+                <th style="text-align: center;">Customer</th>
+                <th style="text-align: center;">Total</th>
+                <th style="text-align: center;">Order Status</th>
+                <th style="text-align: center;">Payment Method</th>
+                <th style="text-align: center;">Time</th>
             </tr>
         </thead>
 
         <tbody>
+            @foreach($recentSales as $sale)
             <tr>
-                <td>#1001</td>
-                <td>Walk In</td>
-                <td>8,000 Ks</td>
-                <td>
-                    <span class="role-badge">Paid</span>
+                <td style="text-align: center;">{{ $sale->invoice_number }}</td>
+                <td style="text-align: center;">{{ $sale->service_type == 'dine_in' ? 'Table - ' : 'Take Away' }}</td>
+                <td style="text-align: center;">{{ number_format($sale->grand_total) }} Ks</td>
+                <td style="text-align: center;">{{ ucfirst($sale->payment_method) }}</td>
+                <td style="text-align: center;">
+                    <span class="badge">{{ \Illuminate\Support\Str::headline($sale->order_status) }}</span>
+                </td>
+                <td style="text-align: center;">
+                    {{ $sale->created_at->diffForHumans() }}
                 </td>
             </tr>
+            @endforeach
         </tbody>
     </table>
 </div>

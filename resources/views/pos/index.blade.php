@@ -21,6 +21,31 @@
 </div>
 @endif
 
+{{-- Error Alert --}}
+@if($errors->any())
+<div class="custom-alert-error">
+
+    <div class="alert-icon">
+        <i class="fa-solid fa-circle-exclamation"></i>
+    </div>
+
+    <div class="alert-content">
+        <h6>Error</h6>
+
+        @foreach($errors->all() as $error)
+        <p>{{ $error }}</p>
+        @endforeach
+
+    </div>
+
+    <button class="alert-close" onclick="this.parentElement.remove()">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+</div>
+@endif
+
+
 {{-- CATEGORY FILTERS --}}
 <div class=" mb-3">
     <div class="filter-group">
@@ -134,61 +159,33 @@
                 @if(!empty($item['modifiers']))
 
                 <div class="cart-modifiers">
-
                     @foreach($item['modifiers'] as $modifier)
-
                     <div class="cart-modifier">
-
                         <span>
-
-                            {{ $modifier['title'] }}
-                            :
-                            {{ $modifier['option'] }}
-
+                            {{ $modifier['title'] }} : {{ $modifier['option'] }}
                         </span>
-
                         @if($modifier['extra_charge'] > 0)
-
                         <small>
-
-                            +{{ number_format($modifier['extra_charge']) }} Ks
-
+                            + {{ number_format($modifier['extra_charge']) }} Ks
                         </small>
-
                         @endif
-
                     </div>
-
                     @endforeach
-
                 </div>
 
                 @endif
 
-
                 {{-- Price Row --}}
                 <div class="cart-line">
-
                     <span>
-
-                        {{ number_format($item['unit_price']) }}
-
-                        Ks
-
+                        {{ number_format($item['unit_price']) }} Ks
                         ×
-
                         {{ $item['quantity'] }}
-
                     </span>
 
                     <strong>
-
-                        {{ number_format($item['subtotal']) }}
-
-                        Ks
-
+                        {{ number_format($item['subtotal']) }} Ks
                     </strong>
-
                 </div>
 
 
@@ -196,68 +193,37 @@
                 <div class="cart-actions">
 
                     <div class="qty-controls">
-
-                        <form
-                            method="POST"
-                            action="{{ route('pos.cart.decrease',$item['cart_key']) }}">
-
+                        <form method="POST" action="{{ route('pos.cart.decrease',$item['cart_key']) }}">
                             @csrf
 
                             <button type="submit">
-
                                 -
-
                             </button>
-
                         </form>
-
 
                         <span>
-
                             {{ $item['quantity'] }}
-
                         </span>
 
-
-                        <form
-                            method="POST"
-                            action="{{ route('pos.cart.increase',$item['cart_key']) }}">
-
+                        <form method="POST" action="{{ route('pos.cart.increase',$item['cart_key']) }}">
                             @csrf
 
                             <button type="submit">
-
                                 +
-
                             </button>
-
                         </form>
-
                     </div>
 
-
-                    <form
-                        method="POST"
-                        action="{{ route('pos.cart.remove',$item['cart_key']) }}">
-
+                    <form method="POST" action="{{ route('pos.cart.remove',$item['cart_key']) }}">
                         @csrf
 
-                        <button
-                            type="submit"
-                            class="remove-item-btn">
-
+                        <button type="submit" class="remove-item-btn">
                             <i class="fa-solid fa-trash"></i>
-
                         </button>
-
                     </form>
-
                 </div>
-
             </div>
-
             @endforeach
-
         </div>
 
         @else
@@ -274,12 +240,8 @@
         @php
 
         $subtotal = collect($cart)->sum('subtotal');
-
         $discount = $subtotal * (($setting->discount_percentage ?? 0) / 100);
-
-        $tax = ($subtotal - $discount)
-        * (($setting->tax_percentage ?? 0) / 100);
-
+        $tax = ($subtotal - $discount) * (($setting->tax_percentage ?? 0) / 100);
         $grandTotal = $subtotal - $discount + $tax;
 
         @endphp
@@ -520,45 +482,57 @@
             `;
         });
 
-        document.getElementById('modalContent').innerHTML = `
-            <h4 class="modal-product-title">
-                ${name}
-            </h4>
 
-            <div class="modal-body-layout">
+        document.getElementById('modalContent').innerHTML = `
+
+            <div class="modal-header-product">
                 <div class="pos-modal-image">
                     <img src="${image}" alt="${name}">
                 </div>
 
-                <div class="modal-details">
+                <div class="modal-product-info">
+                    <h4 class="modal-product-title">
+                        ${name}
+                    </h4>
+
                     <p class="pos-description">
                         ${description}
                     </p>
-
-                    <div class="variant-section">
-                        <div class="variant-list">
-                            ${variantsHtml}
-                        </div>
-                    </div>
-
-                    <div class="modifier-wrapper">
-                        ${modifiersHtml}
-                    </div>
-
-                    <form method="POST" action="{{ route('pos.cart.add') }}">
-                        @csrf
-
-                        <input type="hidden" name="variant_id" id="selectedVariantId">
-                        <input type="hidden" name="quantity" id="selectedQuantity" value="1">
-                        <div id="modifierInputs"></div>
-
-                        <button type="submit" class="btn btn-primary">
-                            Add To Cart
-                        </button>
-                    </form>
-
                 </div>
             </div>
+
+
+            <div class="modal-options">
+
+                <div class="variant-section">
+                    <h5 class="option-title">
+                        Size
+                    </h5>
+
+                    <div class="variant-list">
+                        ${variantsHtml}
+                    </div>
+                </div>
+
+                <div class="modifier-wrapper">
+                    ${modifiersHtml}
+                </div>
+
+                <form method="POST" action="{{ route('pos.cart.add') }}">
+                    @csrf
+
+                    <input type="hidden" name="variant_id" id="selectedVariantId">
+                    <input  type="hidden"  name="quantity"  id="selectedQuantity"  value="1">
+
+                    <div id="modifierInputs"></div>
+
+                    <button type="submit" class="btn btn-primary modal-cart-btn">
+                        Add To Cart
+                    </button>
+                </form>
+
+            </div>
+
         `;
 
         const variantRadios = document.querySelectorAll('input[name="variant_choice"]');
