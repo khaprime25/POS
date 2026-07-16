@@ -57,7 +57,7 @@
     <a href="{{route('sales.index', ['period'=>'month'])}}">
         <div class="card stat-card">
             <div class="stat-icon">
-                <i class="fa-solid fa-receipt"></i>
+                <i class="fa-solid fa-sack-dollar"></i>
             </div>
 
             <div>
@@ -80,10 +80,23 @@
         </div>
     </a>
 
+    <a href="{{route('dashboard.top')}}">
+        <div class="card stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-star"></i>
+            </div>
+
+            <div>
+                <h3>{{ $bestSellerCount }}</h3>
+                <p>Top Sellers</p>
+            </div>
+        </div>
+    </a>
+
     <a href="{{route('sales.index', ['period'=>'today'])}}">
         <div class="card stat-card">
             <div class="stat-icon">
-                <i class="fa-solid fa-envelope"></i>
+                <i class="fa-solid fa-receipt"></i>
             </div>
 
             <div>
@@ -93,6 +106,19 @@
         </div>
     </a>
 
+</div>
+
+<div class='chart-card'>
+    <div class='chart-header'>
+        <h3>Weekly Sales</h3>
+    </div>
+
+    <div class='chart-container'>
+        <canvas
+            id='salesChart'
+            data-labels='@json($chartLabels)'
+            data-data='@json($chartData)'></canvas>
+    </div>
 </div>
 
 <!-- Today's Activity -->
@@ -127,65 +153,40 @@
     </div>
 
     <div class="card">
-
         <h2 class="section-header mb-2">
             Staff Reports
         </h2>
 
         <div class="activity-list">
-
             @forelse($reports as $report)
-
             <div class="activity-item">
-
                 <div>
-
                     <strong>
                         {{ $report->title }}
                     </strong>
-
                     <p class="section-subtitle">
-
                         Reported by
-
                         {{ ucfirst($report->user->role) }}
-
                         -
-
                         {{ $report->user->name }}
-
                     </p>
 
                     <small>
-
                         {{ \Illuminate\Support\Str::limit($report->message, 60) }}
-
                     </small>
-
                 </div>
 
                 <span class="role-badge">
-
                     {{ ucfirst($report->priority) }}
-
                 </span>
-
             </div>
-
             @empty
-
             <div class="empty-state">
-
                 No open reports.
-
             </div>
-
             @endforelse
-
         </div>
-
     </div>
-
 </div>
 
 <!-- Recent Orders Table -->
@@ -211,7 +212,7 @@
             @foreach($recentSales as $sale)
             <tr>
                 <td style="text-align: center;">{{ $sale->invoice_number }}</td>
-                <td style="text-align: center;">{{ $sale->service_type == 'dine_in' ? 'Table - ' : 'Take Away' }}</td>
+                <td style="text-align: center;">{{ $sale->service_type == 'dine_in' ? 'Walk In ' : 'Take Away' }}</td>
                 <td style="text-align: center;">{{ number_format($sale->grand_total) }} Ks</td>
                 <td style="text-align: center;">{{ ucfirst($sale->payment_method) }}</td>
                 <td style="text-align: center;">

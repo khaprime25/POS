@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\SaleItem;
 
 class ProductVariantController extends Controller
 {
@@ -16,44 +17,20 @@ class ProductVariantController extends Controller
     {
         $variants = ProductVariant::with([
             'product.category'
-        ])
-            ->when($request->category, function ($query) use ($request) {
-
-                $query->whereHas('product', function ($productQuery) use ($request) {
-
-                    $productQuery->where('category_id', $request->category);
-                });
-            })
-            ->when($request->search, function ($query) use ($request) {
-
-                $query->where('name', 'like', '%' . $request->search . '%');
-            })
-            ->latest()
-            ->get();
+        ])->when($request->category, function ($query) use ($request) {
+            $query->whereHas('product', function ($productQuery) use ($request) {
+                $productQuery->where('category_id', $request->category);
+            });
+        })->when($request->search, function ($query) use ($request) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        })->latest()->get();
 
         return view('variants.index', [
-
             'variants' => $variants,
-
-            'products' => Product::where('status', 1)
-                ->orderBy('name')
-                ->get(),
-
-            'categories' => Category::where('status', 1)
-                ->orderBy('name')
-                ->get(),
-
+            'products' => Product::where('status', 1)->orderBy('name')->get(),
+            'categories' => Category::where('status', 1)->orderBy('name')->get(),
             'editingVariant' => null,
-
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -62,61 +39,30 @@ class ProductVariantController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-
             'product_id' => 'required|exists:products,id',
-
             'name' => 'required|max:255',
-
             'price' => 'required|numeric|min:0',
-
             'cost_price' => 'required|numeric|min:0',
-
             'stock' => 'required|integer|min:0',
-
             'status' => 'required|boolean',
-
         ]);
 
-        $exists = ProductVariant::where('product_id', $request->product_id)
-            ->where('name', $request->name)
-            ->exists();
+        $exists = ProductVariant::where('product_id', $request->product_id)->where('name', $request->name)->exists();
 
         if ($exists) {
-
-            return back()
-                ->withErrors([
-                    'name' => 'This variant already exists for the selected product.'
-                ])
-                ->withInput();
+            return back()->withErrors(['name' => 'This variant already exists for the selected product.'])->withInput();
         }
 
         ProductVariant::create([
-
             'product_id' => $request->product_id,
-
             'name' => trim($request->name),
-
             'price' => $request->price,
-
             'cost_price' => $request->cost_price,
-
             'stock' => $request->stock,
-
             'status' => $request->status,
-
         ]);
 
-        return redirect()
-            ->route('variants.index')
-            ->with('success', 'Variant created successfully.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        return redirect()->route('variants.index')->with('success', 'Variant created successfully.');
     }
 
     /**
@@ -126,24 +72,13 @@ class ProductVariantController extends Controller
     {
         $variants = ProductVariant::with([
             'product.category'
-        ])
-            ->latest()
-            ->get();
+        ])->latest()->get();
 
         return view('variants.index', [
-
             'variants' => $variants,
-
-            'products' => Product::where('status', 1)
-                ->orderBy('name')
-                ->get(),
-
-            'categories' => Category::where('status', 1)
-                ->orderBy('name')
-                ->get(),
-
+            'products' => Product::where('status', 1)->orderBy('name')->get(),
+            'categories' => Category::where('status', 1)->orderBy('name')->get(),
             'editingVariant' => $variant,
-
         ]);
     }
 
@@ -153,19 +88,12 @@ class ProductVariantController extends Controller
     public function update(Request $request, ProductVariant $variant)
     {
         $request->validate([
-
             'product_id' => 'required|exists:products,id',
-
             'name' => 'required|max:255',
-
             'price' => 'required|numeric|min:0',
-
             'cost_price' => 'required|numeric|min:0',
-
             'stock' => 'required|integer|min:0',
-
             'status' => 'required|boolean',
-
         ]);
 
         $exists = ProductVariant::where('product_id', $request->product_id)
@@ -174,33 +102,21 @@ class ProductVariantController extends Controller
             ->exists();
 
         if ($exists) {
-
-            return back()
-                ->withErrors([
-                    'name' => 'This variant already exists for the selected product.'
-                ])
-                ->withInput();
+            return back()->withErrors([
+                'name' => 'This variant already exists for the selected product.'
+            ])->withInput();
         }
 
         $variant->update([
-
             'product_id' => $request->product_id,
-
             'name' => trim($request->name),
-
             'price' => $request->price,
-
             'cost_price' => $request->cost_price,
-
             'stock' => $request->stock,
-
             'status' => $request->status,
-
         ]);
 
-        return redirect()
-            ->route('variants.index')
-            ->with('success', 'Variant updated successfully.');
+        return redirect()->route('variants.index')->with('success', 'Variant updated successfully.');
     }
 
     /**
@@ -210,8 +126,6 @@ class ProductVariantController extends Controller
     {
         $variant->delete();
 
-        return redirect()
-            ->route('variants.index')
-            ->with('success', 'Variant deleted successfully.');
+        return redirect()->route('variants.index')->with('success', 'Variant deleted successfully.');
     }
 }

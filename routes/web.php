@@ -32,6 +32,8 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified', 'role:owner'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/stock', [DashboardController::class, 'stock'])->name('dashboard.stock');
+    Route::get('/dashboard/top', [DashboardController::class, 'top'])->name('dashboard.top');
+
 
     Route::resource('categories', CategoryController::class);
     Route::resource('products', ProductController::class);

@@ -221,10 +221,8 @@
 
     </div>
 
-    <div class="mt-4">
-
+    <div class="pagination-wrapper">
         {{ $variants->links() }}
-
     </div>
 
 </div>

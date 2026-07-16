@@ -7,6 +7,8 @@
     <title>@yield('title')</title>
     <script src="https://kit.fontawesome.com/1980864942.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ asset('asset/css/style.css') }}">
+    @vite(['resources/js/app.js'])
+
 </head>
 
 <body>
