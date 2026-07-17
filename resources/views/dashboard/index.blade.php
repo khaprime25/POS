@@ -106,6 +106,19 @@
         </div>
     </a>
 
+    <a href="{{route('reports.index')}}">
+        <div class="card stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-star"></i>
+            </div>
+
+            <div>
+                <h3>{{ $reportCount }}</h3>
+                <p>Staff Reports</p>
+            </div>
+        </div>
+    </a>
+
 </div>
 
 <div class='chart-card'>

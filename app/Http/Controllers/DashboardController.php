@@ -67,6 +67,7 @@ class DashboardController extends Controller
         $completedOrders = Sales::where('order_status', 'completed')->count();
 
         $reports = Report::with('user')->where('status', 'open')->latest()->take(5)->get();
+        $reportCount = Report::with('user')->count();
 
         $sales = Sales::whereDate('sale_date', '>=', $startOfWeek)->whereDate('sale_date', '<=', $endOfWeek)->get();
 
@@ -95,6 +96,7 @@ class DashboardController extends Controller
             'readyOrders',
             'completedOrders',
             'reports',
+            'reportCount',
             'chartData',
             'chartLabels'
         ));
